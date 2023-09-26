@@ -1,0 +1,34 @@
+{
+  "name": "PIAS_RUNTIME_AI_CLIENT",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@ant-design/cssinjs": "^1.17.0",
+    "@reduxjs/toolkit": "^1.9.5",
+    "antd": "^5.9.2",
+    "autoprefixer": "10.4.16",
+    "axios": "^1.5.0",
+    "eslint": "8.49.0",
+    "eslint-config-next": "13.5.2",
+    "next": "13.5.2",
+    "postcss": "8.4.30",
+    "prop-types": "^15.8.1",
+    "qs": "^6.11.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.11.0",
+    "react-redux": "^8.1.2",
+    "tailwindcss": "3.3.3"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3"
+  }
+}
