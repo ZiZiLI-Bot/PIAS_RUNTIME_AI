@@ -58,3 +58,5 @@ ultralytics==8.0.181
 urllib3==2.0.4
 vietocr==0.3.11
 Werkzeug==2.3.7
+uvicorn
+fastapi
