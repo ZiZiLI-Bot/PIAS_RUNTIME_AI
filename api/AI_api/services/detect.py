@@ -8,19 +8,21 @@ from urllib.request import urlopen
 from PIL import Image
 import requests
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
 # Load Model
 abs_path = os.getcwd()
-path_model = os.path.join(abs_path, 'assets/models/')
-model1 = torch.hub.load('ultralytics/yolov5', 'custom',
-                        path=path_model + 'last_22_7.pt')
+path_model = os.path.join(abs_path, "assets/models/")
+model1 = torch.hub.load(
+    "ultralytics/yolov5", "custom", path=path_model + "last_22_7.pt"
+)
 model1.conf = 0.2
 
-config = Cfg.load_config_from_name('vgg_seq2seq')
-config['weights'] = os.path.join(path_model, 'vgg_seq2seq.pth')
-config['device'] = 'cuda'
+config = Cfg.load_config_from_name("vgg_transformer")
+# config["weights"] = os.path.join(path_model, "vgg_seq2seq.pth")
+config["device"] = "cuda"
 detector = Predictor(config)
 
 
@@ -46,58 +48,64 @@ def detected(img_path):
         left=border_size,
         right=border_size,
         borderType=cv2.BORDER_CONSTANT,
-        value=[255, 255, 255]
+        value=[255, 255, 255],
     )
     orig = img.copy()
     rs = model1(img)
     out = rs.pandas().xyxy[0]
 
-    if len(out[out['name'] == 'tl']) == 1 and len(out[out['name'] == 'tr']) == 1 and len(out[out['name'] == 'br']) == 1 and len(out[out['name'] == 'bl']) == 1:
+    if (
+        len(out[out["name"] == "tl"]) == 1
+        and len(out[out["name"] == "tr"]) == 1
+        and len(out[out["name"] == "br"]) == 1
+        and len(out[out["name"] == "bl"]) == 1
+    ):
         for i in range(len(out)):
-            if out['name'][i] == 'br':
-                x = int((out['xmin'][i] + out['xmax'][i]) // 2)
-                y = int((out['ymin'][i] + out['ymax'][i]) // 2)
+            if out["name"][i] == "br":
+                x = int((out["xmin"][i] + out["xmax"][i]) // 2)
+                y = int((out["ymin"][i] + out["ymax"][i]) // 2)
                 br.append(x)
                 br.append(y)
 
-            elif out['name'][i] == 'tr':
-                x = int((out['xmin'][i] + out['xmax'][i]) // 2)
-                y = int((out['ymin'][i] + out['ymax'][i]) // 2)
+            elif out["name"][i] == "tr":
+                x = int((out["xmin"][i] + out["xmax"][i]) // 2)
+                y = int((out["ymin"][i] + out["ymax"][i]) // 2)
                 tr.append(x)
                 tr.append(y)
 
-            elif out['name'][i] == 'tl':
-                x = int((out['xmin'][i] + out['xmax'][i]) // 2)
-                y = int((out['ymin'][i] + out['ymax'][i]) // 2)
+            elif out["name"][i] == "tl":
+                x = int((out["xmin"][i] + out["xmax"][i]) // 2)
+                y = int((out["ymin"][i] + out["ymax"][i]) // 2)
                 tl.append(x)
                 tl.append(y)
 
             else:
-                x = int((out['xmin'][i] + out['xmax'][i]) // 2)
-                y = int((out['ymin'][i] + out['ymax'][i]) // 2)
+                x = int((out["xmin"][i] + out["xmax"][i]) // 2)
+                y = int((out["ymin"][i] + out["ymax"][i]) // 2)
                 bl.append(x)
                 bl.append(y)
 
         input_pts = np.float32([tl, tr, br, bl])
 
-        output_pts = np.float32([[0, 0],
-                                [1000, 0],
-                                [1000, 600],
-                                [0, 600]])
+        output_pts = np.float32([[0, 0], [1000, 0], [1000, 600], [0, 600]])
 
         M = cv2.getPerspectiveTransform(input_pts, output_pts)
 
-        warped = cv2.warpPerspective(
-            img, M, (1000, 600), flags=cv2.INTER_LINEAR)
+        warped = cv2.warpPerspective(img, M, (1000, 600), flags=cv2.INTER_LINEAR)
         warped = cv2.cvtColor(warped, cv2.COLOR_BGR2RGB)
-        mess = 'success'
+        mess = "success"
 
-    elif len(out[out['name'] == 'tl']) == 2 and len(out[out['name'] == 'tr']) == 2 and len(out[out['name'] == 'br']) == 2 and len(out[out['name'] == 'bl']) == 2:
-        mess = 'More than one card'
+    elif (
+        len(out[out["name"] == "tl"]) == 2
+        and len(out[out["name"] == "tr"]) == 2
+        and len(out[out["name"] == "br"]) == 2
+        and len(out[out["name"] == "bl"]) == 2
+    ):
+        mess = "More than one card"
         warped = None
         orig = None
     else:
-        mess = 'Is not detected card'
+        mess = "Is not detected card"
         warped = None
         orig = None
 
@@ -117,18 +125,17 @@ def information(warped):
 
 def plot(imgPath):
     tl, tr, br, bl, warped, orig, mess = detected(imgPath)
-    os.chdir(os.path.join(abs_path, 'assets/images'))
-    imgName = imgPath.split('/')[-1].split(".")[0] + "_out.png"
+    os.chdir(os.path.join(abs_path, "assets/images"))
+    imgName = imgPath.split("/")[-1].split(".")[0] + "_out.png"
     cv2.imwrite(imgName, warped)
 
-    file = {'file': (imgName, open(imgName, 'rb').read(), 'image/png')}
-    response = requests.post(os.getenv('API_UPLOAD'), files=file)
-    UrlUpload = response.json().get('data')[0].get('url')
-    if (UrlUpload != None):
+    file = {"file": (imgName, open(imgName, "rb").read(), "image/png")}
+    response = requests.post(os.getenv("API_UPLOAD"), files=file)
+    UrlUpload = response.json().get("data")[0].get("url")
+    if UrlUpload != None:
         os.remove(imgName)
     # read information
-    name_, ID_, date_, sex_, origin_, residence1_, residence2_ = information(
-        warped)
+    name_, ID_, date_, sex_, origin_, residence1_, residence2_ = information(warped)
     name_ = Image.fromarray(name_)
     date_ = Image.fromarray(date_)
     sex_ = Image.fromarray(sex_)
@@ -143,6 +150,6 @@ def plot(imgPath):
     origin = detector.predict(origin_, return_prob=False)
     residence1 = detector.predict(residence1_, return_prob=False)
     residence2 = detector.predict(residence2_, return_prob=False)
-    residence = residence1 + ', ' + residence2
+    residence = residence1 + ", " + residence2
     imgOutUrl = UrlUpload
     return name, date, gender, ID, origin, residence, mess, imgOutUrl
