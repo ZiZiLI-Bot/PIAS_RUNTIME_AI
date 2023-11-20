@@ -17,29 +17,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
 
 @app.post("/api/detect")
 def detect(body: DetectBody):
     url_img = body.url_img
     if url_img is None:
-        return error(None, 'imgURL is required')
+        return error(None, "imgURL is required")
     else:
-        name, date, gender, ID, origin, residence, mess, imgOutUrl = plot(
-            url_img)
-        if mess == 'success':
+        name, date, ID, origin, residence, mess, imgOutUrl = plot(url_img)
+        if mess == "success":
             data = {
                 "name": name,
                 "dateOfBirth": date,
-                "gender": gender,
+                # "gender": gender,
                 "IDCard": ID,
                 "origin": origin,
                 "residence": residence,
-                "imgDetect": imgOutUrl
+                "imgDetect": imgOutUrl,
             }
             return success(data, mess)
         else:
             return error(None, mess)
-    
