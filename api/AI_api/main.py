@@ -1,10 +1,11 @@
+import os
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from routers.detect_api import DetectRouter
 from routers.upload_api import UploadRouter
 
-app = FastAPI(title="SERVER RUNTIME MODEL AI", docs_url="/")
+app = FastAPI(title="APIs RUNTIME MODEL", docs_url="/")
 
 RootRouter = APIRouter()
 RootRouter.include_router(UploadRouter, prefix="/upload", tags=["Upload"])
@@ -19,7 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.mount("/file", StaticFiles(directory="public"), name="public")
+app.mount(
+    "/file",
+    StaticFiles(directory=os.path.join(os.path.dirname(__file__), "public")),
+    name="public",
+)
 
 
 app.include_router(RootRouter, prefix="/api/v1")

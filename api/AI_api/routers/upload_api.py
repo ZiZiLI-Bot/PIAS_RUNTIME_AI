@@ -15,11 +15,14 @@ async def upload(file: UploadFile = File(...)):
     extension = file.filename.split(".")[1]
     imageName = imageName + "_" + str(uuid4()) + "." + extension
     try:
-        with open("public/" + imageName, "wb") as buffer:
+        with open(
+            os.path.join(os.path.dirname(__file__), f"../public/{imageName}"), "wb"
+        ) as buffer:
             buffer.write(file.file.read())
             buffer.close()
-    except Exception:
-        return error(None, "Upload failed")
+    except Exception as err:
+        print(err)
+        return error(err, "Upload failed")
     finally:
         file.file.close()
 
@@ -31,6 +34,6 @@ async def upload(file: UploadFile = File(...)):
 async def delete(file_name: str):
     try:
         os.remove("public/" + file_name)
-    except Exception:
-        return error(None, "Delete failed")
+    except Exception as err:
+        return error(err, "Delete failed")
     return success(None, "Delete success")

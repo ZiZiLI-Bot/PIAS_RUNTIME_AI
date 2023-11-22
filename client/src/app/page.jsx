@@ -1,40 +1,97 @@
 /* eslint-disable no-undef */
 'use client';
 import NavBar from '@/components/Navbar';
-import { axiosDetect } from '@/utils/API';
-import { Button, Col, Row, Space, Typography, Upload, message } from 'antd';
+import AXClient from '@/utils/API';
+import { Button, Col, Radio, Row, Space, Typography, Upload, message } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { BiIdCard } from 'react-icons/bi';
 
 const { Text } = Typography;
-const formData = {
-  ID_Number: '',
-  Name: '',
-  Gender: '',
-  Date_Of_Birth: '',
-  Hometown: '',
-  Residence: '',
+const formDataCCCD = {
+  'Số căn cước': '',
+  'Họ và tên': '',
+  'Giới tính': '',
+  'Ngày sinh': '',
+  'Quê quán': '',
+  'Nơi thường chú': '',
+};
+
+const formDataCMND = {
+  'Chứng minh nhân dân': '',
+  'Họ và tên': '',
+  'Ngày sinh': '',
+  'Nguyên quán': '',
+  'Nơi thường chú': '',
 };
 export default function HomePage() {
   const [image, setImage] = useState(null);
-  const [data, setData] = useState(formData);
+  const [data, setData] = useState(formDataCCCD);
   const [loading, setLoading] = useState(false);
+  const [typeCard, setTypeCard] = useState('frontCCCD');
+
+  useEffect(() => {
+    switch (typeCard) {
+      case 'frontCCCD':
+      case 'frontCCCD_old':
+        setData(formDataCCCD);
+        setImage(null);
+        break;
+      case 'frontCMND':
+        setData(formDataCMND);
+        setImage(null);
+        break;
+      default:
+        setData(formDataCCCD);
+        setImage(null);
+        break;
+    }
+  }, [typeCard]);
+
+  const fieldData = (data, typeCard) => {
+    switch (typeCard) {
+      case 'frontCCCD':
+      case 'frontCCCD_old':
+        return {
+          'Số căn cước': data.ID,
+          'Họ và tên': data.name,
+          'Giới tính': data.gender,
+          'Ngày sinh': data.date_of_birth,
+          'Quê quán': data.origin,
+          'Nơi thường chú': data.residence,
+        };
+      case 'frontCMND':
+        return {
+          'Chứng minh nhân dân': data.ID,
+          'Họ và tên': data.name,
+          'Ngày sinh': data.date_of_birth,
+          'Nguyên quán': data.origin,
+          'Nơi thường chú': data.residence,
+        };
+      default:
+        break;
+    }
+  };
+
   const props = {
     name: 'file',
     multiple: false,
-    action: process.env.NEXT_PUBLIC_API_DATA + '/uploads',
+    action: process.env.NEXT_PUBLIC_URL_API + '/upload/',
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        console.log(info.file);
       }
       if (status === 'done') {
         if (info.file.response.success) {
-          setImage(info.file.response.data[0]);
-          detectImage(info.file.response.data[0].url);
+          console.log(info.file.response);
+          setImage({ url: URL.createObjectURL(info.file.originFileObj) });
+          detectImage(info.file.response.data.name);
+          message.success(`${info.file.name} file uploaded successfully.`);
+        } else {
+          message.error('Error: Failed to upload file');
         }
-        message.success(`${info.file.name} file uploaded successfully.`);
       } else if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -43,23 +100,17 @@ export default function HomePage() {
       console.log('Dropped files', e.dataTransfer.files);
     },
   };
-  const detectImage = async (urlImg) => {
+  const detectImage = async (imageName) => {
     setLoading(true);
     const data = {
-      url_img: urlImg,
+      imageName,
+      typeCard,
     };
-    const res = await axiosDetect.post('/detect', data);
+    const res = await AXClient.post('/detect', data);
     if (res.success) {
       console.log(res.data);
-      setImage({ name: 'detect', url: res.data.imgDetect });
-      const detectData = {
-        ID_Number: res.data.IDCard,
-        Name: res.data.name,
-        Gender: res.data.gender,
-        Date_Of_Birth: res.data.dateOfBirth,
-        Hometown: res.data.origin,
-        Residence: res.data.residence,
-      };
+      setImage({ name: 'detect', url: res.data.imgOutUrl });
+      const detectData = fieldData(res.data, typeCard);
       setData(detectData);
     } else {
       console.log(res);
@@ -79,9 +130,11 @@ export default function HomePage() {
               </Text>
               <Text className='block text-7xl font-bold HomeText'>Extract identification paper data</Text>
               <Space size='middle' className='mt-6'>
-                <Button className='w-32 shadow-md shadow-blue-600/50' size='large' type='primary'>
-                  <Text className='text-base font-medium text-white'>Demo</Text>
-                </Button>
+                <Link href='/demo'>
+                  <Button className='w-32 shadow-md shadow-blue-600/50' size='large' type='primary'>
+                    <Text className='text-base font-medium text-white'>Demo</Text>
+                  </Button>
+                </Link>
                 <Button className='w-32' size='large' type='default'>
                   Get Contacts
                 </Button>
@@ -90,7 +143,14 @@ export default function HomePage() {
           </Col>
           <Col span={12} className='w-full h-full flex items-center justify-center'>
             <div className='w-3/4 h-2/3 bg-slate-50 rounded-md shadow-xl shadow-slate-300 p-6'>
-              <Text className='block text-base mb-2 font-medium'>Quick demo:</Text>
+              <div className='flex items-center space-x-3 mb-2'>
+                <Text className='block text-base font-medium'>Quick demo:</Text>
+                <Radio.Group onChange={(e) => setTypeCard(e.target.value)} value={typeCard}>
+                  <Radio value='frontCCCD'>CCCD gắn chip</Radio>
+                  <Radio value='frontCCCD_old'>CCCD cũ</Radio>
+                  <Radio value='frontCMND'>Chứng minh nhân dân</Radio>
+                </Radio.Group>
+              </div>
               {!image ? (
                 <Upload.Dragger {...props} accept='image/*' height='30%'>
                   <p className='ant-upload-drag-icon'>

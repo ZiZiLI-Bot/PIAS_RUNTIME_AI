@@ -34,7 +34,7 @@ export default function CCCD_Detect() {
     <main>
       <Row>
         <Col span={12} className='p-3'>
-          <Title level={4}>Front CMND</Title>
+          <Title level={4}>Mặt trước CCCD gắn chip</Title>
           <Upload.Dragger {...props} accept='image/*' height={200}>
             <p className='ant-upload-drag-icon'>
               <BiIdCard className='inline text-blue-400' size={50} />
@@ -44,7 +44,7 @@ export default function CCCD_Detect() {
           </Upload.Dragger>
         </Col>
         <Col span={12} className='p-3'>
-          <Title level={4}>Back CMND</Title>
+          <Title level={4}>Mặt sau CCCD gắn chip</Title>
           <Upload.Dragger {...props} accept='image/*' height={200}>
             <p className='ant-upload-drag-icon'>
               <BiIdCard className='inline text-blue-400' size={50} />

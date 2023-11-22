@@ -2,8 +2,8 @@
 import axios from 'axios';
 import { parse, stringify } from 'qs';
 
-const axiosDetect = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_DETECT,
+const AXClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_URL_API,
   headers: {
     'content-type': 'application/json',
   },
@@ -22,7 +22,7 @@ const axiosDetect = axios.create({
 //   return config;
 // });
 
-axiosDetect.interceptors.response.use(
+AXClient.interceptors.response.use(
   (response) => {
     if (response && response.data) {
       return response.data;
@@ -34,4 +34,5 @@ axiosDetect.interceptors.response.use(
     return error.response;
   },
 );
-export { axiosDetect };
+
+export default AXClient;
