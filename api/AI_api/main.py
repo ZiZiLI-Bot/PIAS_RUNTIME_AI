@@ -1,45 +1,28 @@
-from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from services.detect import plot
-from utilities.response import error, success
-from constants.detect import DetectBody
+from fastapi.staticfiles import StaticFiles
+from routers.upload_api import UploadRouter
 
-app = FastAPI()
+app = FastAPI(title="SERVER RUNTIME MODEL AI", docs_url="/")
 
-origins = ["*"]
+RootRouter = APIRouter()
+RootRouter.include_router(UploadRouter, prefix="/upload", tags=["Upload"])
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+app.mount("/file", StaticFiles(directory="public"), name="public")
 
 
-@app.post("/api/detect")
-def detect(body: DetectBody):
-    url_img = body.url_img
-    if url_img is None:
-        return error(None, "imgURL is required")
-    else:
-        name, date, ID, origin, residence, mess, imgOutUrl = plot(url_img)
-        if mess == "success":
-            data = {
-                "name": name,
-                "dateOfBirth": date,
-                # "gender": gender,
-                "IDCard": ID,
-                "origin": origin,
-                "residence": residence,
-                "imgDetect": imgOutUrl,
-            }
-            return success(data, mess)
-        else:
-            return error(None, mess)
+app.include_router(RootRouter, prefix="/api/v1")
+
+
+# @app.get("/")
+# def read_root():
+#     return {"Hello": "World"}
