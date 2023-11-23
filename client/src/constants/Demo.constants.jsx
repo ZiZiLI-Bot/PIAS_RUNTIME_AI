@@ -1,26 +1,21 @@
-import { createElement } from 'react';
-import { RxIdCard } from 'react-icons/rx';
 import { Typography } from 'antd';
 const { Title } = Typography;
 
 const MENU_ITEMS = [
   {
     key: 'cccd',
-    label: (
-      <Title level={5} style={{ margin: 0 }}>
-        CCCD
-      </Title>
-    ),
-    icon: createElement(RxIdCard, { size: 20 }),
+    label: 'CCCD gắn chip',
+    // icon: createElement(RxIdCard, { size: 20 }),
+  },
+  {
+    key: 'cccd_old',
+    label: 'CCCD cũ',
+    // icon: createElement(RxIdCard, { size: 20 }),
   },
   {
     key: 'cmnd',
-    label: (
-      <Title level={5} style={{ margin: 0 }}>
-        CMND
-      </Title>
-    ),
-    icon: createElement(RxIdCard, { size: 20 }),
+    label: 'CMND',
+    // icon: createElement(RxIdCard, { size: 20 }),
   },
 ];
 

@@ -1,4 +1,5 @@
 import os
+from config import ABS_PATH
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -6,6 +7,7 @@ from routers.detect_api import DetectRouter
 from routers.upload_api import UploadRouter
 
 app = FastAPI(title="APIs RUNTIME MODEL", docs_url="/")
+
 
 RootRouter = APIRouter()
 RootRouter.include_router(UploadRouter, prefix="/upload", tags=["Upload"])
@@ -22,7 +24,7 @@ app.add_middleware(
 
 app.mount(
     "/file",
-    StaticFiles(directory=os.path.join(os.path.dirname(__file__), "public")),
+    StaticFiles(directory=os.path.join(ABS_PATH, "public")),
     name="public",
 )
 

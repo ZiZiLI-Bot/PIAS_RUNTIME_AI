@@ -39,7 +39,7 @@ const DemoLayout = ({ children }) => {
             items={MENU_ITEMS}
           />
         </Sider>
-        <Layout className='p-2'>
+        <Layout className='p-6'>
           <Content className='bg-white rounded-md p-4'>{children}</Content>
         </Layout>
       </Layout>

@@ -25,4 +25,21 @@ const NAV_LINKS = [
   },
 ];
 
-export { NAV_LINKS };
+const formDataCCCD = {
+  'Số căn cước': '',
+  'Họ và tên': '',
+  'Giới tính': '',
+  'Ngày sinh': '',
+  'Quê quán': '',
+  'Nơi thường chú': '',
+};
+
+const formDataCMND = {
+  'Chứng minh nhân dân': '',
+  'Họ và tên': '',
+  'Ngày sinh': '',
+  'Nguyên quán': '',
+  'Nơi thường chú': '',
+};
+
+export { NAV_LINKS, formDataCCCD, formDataCMND };

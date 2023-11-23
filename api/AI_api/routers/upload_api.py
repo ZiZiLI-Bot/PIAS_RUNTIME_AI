@@ -1,4 +1,5 @@
 import os
+from config import ABS_PATH
 from fastapi import APIRouter, UploadFile, File
 from utilities.response import error, success
 from uuid import uuid4
@@ -15,9 +16,7 @@ async def upload(file: UploadFile = File(...)):
     extension = file.filename.split(".")[1]
     imageName = imageName + "_" + str(uuid4()) + "." + extension
     try:
-        with open(
-            os.path.join(os.path.dirname(__file__), f"../public/{imageName}"), "wb"
-        ) as buffer:
+        with open(os.path.join(ABS_PATH, f"public/{imageName}"), "wb") as buffer:
             buffer.write(file.file.read())
             buffer.close()
     except Exception as err:
@@ -33,7 +32,7 @@ async def upload(file: UploadFile = File(...)):
 @UploadRouter.delete("/")
 async def delete(file_name: str):
     try:
-        os.remove("public/" + file_name)
+        os.remove(os.path.join(ABS_PATH, f"public/{file_name}"))
     except Exception as err:
         return error(err, "Delete failed")
     return success(None, "Delete success")

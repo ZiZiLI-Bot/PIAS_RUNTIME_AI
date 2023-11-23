@@ -7,24 +7,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BiIdCard } from 'react-icons/bi';
+import { formDataCCCD, formDataCMND } from '@/constants/HomePage.constant';
 
 const { Text } = Typography;
-const formDataCCCD = {
-  'Số căn cước': '',
-  'Họ và tên': '',
-  'Giới tính': '',
-  'Ngày sinh': '',
-  'Quê quán': '',
-  'Nơi thường chú': '',
-};
 
-const formDataCMND = {
-  'Chứng minh nhân dân': '',
-  'Họ và tên': '',
-  'Ngày sinh': '',
-  'Nguyên quán': '',
-  'Nơi thường chú': '',
-};
 export default function HomePage() {
   const [image, setImage] = useState(null);
   const [data, setData] = useState(formDataCCCD);

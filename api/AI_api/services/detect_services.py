@@ -1,5 +1,6 @@
 from vietocr.tool.predictor import Predictor
 from vietocr.tool.config import Cfg
+from config import ABS_PATH
 import torch
 import cv2
 import numpy as np
@@ -12,8 +13,7 @@ load_dotenv()
 
 
 # Load Model
-abs_path = os.getcwd()
-path_model = os.path.join(abs_path, "assets/models/")
+path_model = os.path.join(ABS_PATH, "assets/models/")
 model1 = torch.hub.load(
     "ultralytics/yolov5", "custom", path=path_model + "last_22_7.pt"
 )
@@ -31,13 +31,8 @@ def detected(img_path):
     br = []
     bl = []
 
-    # mess = ''
-    img = cv2.imread(os.path.join(abs_path, img_path))
-    # req = urlopen(img_path)
-    # arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
-    # img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # orig = img.copy()
 
     border_size = 150
     img = cv2.copyMakeBorder(
@@ -180,9 +175,10 @@ def information6(warped):
 
 def detect_service(imgPath, typeCard):
     tl, tr, br, bl, warped, orig, mess = detected(imgPath)
-    os.chdir(os.path.join(abs_path, "public"))
+    if warped is None:
+        return {"success": False, "mess": mess, "imgOutUrl": None}
     imgName = imgPath.split("/")[-1].split(".")[0] + "_out.png"
-    cv2.imwrite(imgName, warped)
+    cv2.imwrite(os.path.join(ABS_PATH, f"public/{imgName}"), warped)
     imgOutUrl = f"{os.getenv('HOST_NAME')}/file/{imgName}"
 
     if typeCard == "frontCCCD":
