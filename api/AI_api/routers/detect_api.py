@@ -14,7 +14,7 @@ async def detect(body: DetectBody):
     typeCard = body.typeCard
     try:
         res = detect_service(imgPath, typeCard)
-        if res["success"] == False:
+        if "isFalse" in res and res["isFalse"] == True:
             return error(res["mess"], "Detect failed")
     except Exception as err:
         print(err)
