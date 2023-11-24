@@ -1,21 +1,60 @@
 'use client';
 import { MENU_ITEMS } from '@/constants/Demo.constants';
-import { Layout, Menu, Typography } from 'antd';
+import { Breadcrumb, Layout, Menu, Typography } from 'antd';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { HiOutlineHome } from 'react-icons/hi';
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
 
 const DemoLayout = ({ children }) => {
   const pathname = usePathname();
   const navigate = useRouter();
+  const [listPathName, setListPathName] = useState(pathname.split('/'));
   const [current, setCurrent] = useState(pathname.split('/')[2]);
+
+  useEffect(() => {
+    setListPathName(pathname.split('/'));
+  }, [pathname]);
 
   const handleChangeMenu = (e) => {
     setCurrent(e.key);
     navigate.push(`/demo/${e.key}`);
+  };
+
+  const genItemsBreadcrumb = (listPathName) => {
+    listPathName = listPathName.filter((item) => item !== '');
+    const items = [
+      {
+        key: 'home',
+        title: (
+          <Link href='/'>
+            <HiOutlineHome className='inline mb-1' size={14} />
+          </Link>
+        ),
+      },
+    ];
+    const itemsBreadcrumb = listPathName.map((item, idx) => {
+      if (idx !== listPathName.length - 1) {
+        return {
+          key: item,
+          title: (
+            <Link href={`/${item}`}>
+              <span>{item}</span>
+            </Link>
+          ),
+        };
+      } else {
+        return {
+          key: item,
+          title: <span>{item}</span>,
+        };
+      }
+    });
+    console.log([...items, ...itemsBreadcrumb]);
+    return [...items, ...itemsBreadcrumb];
   };
   return (
     <Layout className='w-full min-h-screen'>
@@ -30,7 +69,7 @@ const DemoLayout = ({ children }) => {
         </div>
       </Header>
       <Layout>
-        <Sider width={200} className='bg-white pt-6'>
+        <Sider width={200} className='bg-white'>
           <Menu
             onClick={handleChangeMenu}
             selectedKeys={[current]}
@@ -39,8 +78,9 @@ const DemoLayout = ({ children }) => {
             items={MENU_ITEMS}
           />
         </Sider>
-        <Layout className='p-6'>
-          <Content className='bg-white rounded-md p-4'>{children}</Content>
+        <Layout className='px-5 pb-5'>
+          <Breadcrumb className='my-2' items={genItemsBreadcrumb(listPathName)} />
+          <Content className='bg-white rounded-md p-4 overflow-auto'>{children}</Content>
         </Layout>
       </Layout>
     </Layout>

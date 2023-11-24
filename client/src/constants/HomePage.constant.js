@@ -35,7 +35,7 @@ const formDataCCCD = {
 };
 
 const formDataCMND = {
-  'Chứng minh nhân dân': '',
+  'Số CMND': '',
   'Họ và tên': '',
   'Ngày sinh': '',
   'Nguyên quán': '',

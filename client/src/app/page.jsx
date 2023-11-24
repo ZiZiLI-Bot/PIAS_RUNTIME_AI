@@ -49,7 +49,7 @@ export default function HomePage() {
         };
       case 'frontCMND':
         return {
-          'Chứng minh nhân dân': data.ID,
+          'Số CMND': data.ID,
           'Họ và tên': data.name,
           'Ngày sinh': data.date_of_birth,
           'Nguyên quán': data.origin,
@@ -129,7 +129,7 @@ export default function HomePage() {
           </Col>
           <Col span={12} className='w-full h-full flex items-center justify-center'>
             <div className='w-3/4 h-2/3 bg-slate-50 rounded-md shadow-xl shadow-slate-300 p-6'>
-              <div className='flex items-center space-x-3 mb-2'>
+              <div className='flex flex-col space-y-2 mb-2'>
                 <Text className='block text-base font-medium'>Quick demo:</Text>
                 <Radio.Group onChange={(e) => setTypeCard(e.target.value)} value={typeCard}>
                   <Radio value='frontCCCD'>CCCD gắn chip</Radio>
