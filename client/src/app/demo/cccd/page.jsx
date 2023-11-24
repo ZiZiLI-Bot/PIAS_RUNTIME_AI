@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 'use client';
+import ModalExportFile from '@/components/ModalExportFile';
 import AXClient from '@/utils/API';
 import { Button, Col, Descriptions, Row, Tooltip, Typography, Upload, message, notification } from 'antd';
 import Image from 'next/image';
@@ -28,6 +29,7 @@ export default function CCCD_Detect() {
   const [dataRes, setDataRes] = useState(null);
   const [RenData, setRenData] = useState(null);
   const [dataReady, setDataReady] = useState(false);
+  const [exportModal, setExportModal] = useState(false);
 
   const props = {
     name: 'file',
@@ -55,9 +57,9 @@ export default function CCCD_Detect() {
 
   const handleChange = async (info, typeCard) => {
     const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
+    // if (status !== 'uploading') {
+    //   console.log(info.file, info.fileList);
+    // }
     if (status === 'done') {
       if (info.file.response.success) {
         if (typeCard === 'frontCCCD') {
@@ -197,10 +199,12 @@ export default function CCCD_Detect() {
           size='large'
           icon={<TbFileExport className='inline mb-1' size={16} />}
           disabled={!dataReady}
+          onClick={() => setExportModal(true)}
         >
           Xuất dữ liệu
         </Button>
       </div>
+      <ModalExportFile open={exportModal} setOpen={setExportModal} data={RenData} />
     </main>
   );
 }

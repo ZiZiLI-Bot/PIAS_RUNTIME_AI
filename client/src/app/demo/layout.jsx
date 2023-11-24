@@ -17,6 +17,7 @@ const DemoLayout = ({ children }) => {
 
   useEffect(() => {
     setListPathName(pathname.split('/'));
+    setCurrent(pathname.split('/')[2]);
   }, [pathname]);
 
   const handleChangeMenu = (e) => {
@@ -53,11 +54,10 @@ const DemoLayout = ({ children }) => {
         };
       }
     });
-    console.log([...items, ...itemsBreadcrumb]);
     return [...items, ...itemsBreadcrumb];
   };
   return (
-    <Layout className='w-full min-h-screen'>
+    <Layout className='w-full h-screen'>
       <Header className='flex items-center bg-white'>
         <div>
           <Link href='/' className='mb-6'>
@@ -78,7 +78,7 @@ const DemoLayout = ({ children }) => {
             items={MENU_ITEMS}
           />
         </Sider>
-        <Layout className='px-5 pb-5'>
+        <Layout className='px-5 pb-5 w-full'>
           <Breadcrumb className='my-2' items={genItemsBreadcrumb(listPathName)} />
           <Content className='bg-white rounded-md p-4 overflow-auto'>{children}</Content>
         </Layout>

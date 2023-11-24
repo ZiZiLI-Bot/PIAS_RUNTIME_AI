@@ -1,6 +1,3 @@
-import { Typography } from 'antd';
-const { Title } = Typography;
-
 const MENU_ITEMS = [
   {
     key: 'cccd',

@@ -3,6 +3,7 @@
 import React from 'react';
 import { createCache, extractStyle, StyleProvider } from '@ant-design/cssinjs';
 import { useServerInsertedHTML } from 'next/navigation';
+import propTypes from 'prop-types';
 
 const StyledComponentsRegistry = ({ children }) => {
   const cache = React.useMemo(() => createCache(), []);
@@ -15,3 +16,7 @@ const StyledComponentsRegistry = ({ children }) => {
 };
 
 export default StyledComponentsRegistry;
+
+StyledComponentsRegistry.propTypes = {
+  children: propTypes.node,
+};

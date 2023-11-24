@@ -21,7 +21,7 @@ const renObjItem = (item) => {
 };
 
 const { Text, Title } = Typography;
-export default function CMND_PAGE() {
+export default function CCCD_Old_Detect() {
   const [imageFront, setImageFront] = useState(null);
   const [imageBack, setImageBack] = useState(null);
   const [onLoadFront, setOnLoadFront] = useState(false);
@@ -44,10 +44,11 @@ export default function CMND_PAGE() {
 
   useEffect(() => {
     const data = {
-      'Số CMND': dataRes?.ID || '',
+      'Số căn cước': dataRes?.ID || '',
       'Họ và tên': dataRes?.name || '',
+      'Giới tính': dataRes?.gender || '',
       'Ngày sinh': dataRes?.date_of_birth || '',
-      'Nguyên quán': dataRes?.origin || '',
+      'Quê quán': dataRes?.origin || '',
       'Nơi thường chú': dataRes?.residence || '',
       'Ngày cấp': dataRes?.date || '',
     };
@@ -61,7 +62,7 @@ export default function CMND_PAGE() {
     // }
     if (status === 'done') {
       if (info.file.response.success) {
-        if (typeCard === 'frontCMND') {
+        if (typeCard === 'frontCCCD_old') {
           setOnLoadFront(true);
           setImageFront(URL.createObjectURL(info.file.originFileObj));
           const res = await handleDetect(info.file.response.data.name, typeCard);
@@ -132,7 +133,7 @@ export default function CMND_PAGE() {
       </div>
       <Row className='h-[260px]'>
         <Col span={12} className='p-3'>
-          <Title level={4}>Mặt trước Chứng minh nhân dân</Title>
+          <Title level={4}>Mặt trước CCCD cũ</Title>
           {imageFront ? (
             <div className='w-full h-full flex items-center justify-center relative'>
               {onLoadFront && (
@@ -145,13 +146,13 @@ export default function CMND_PAGE() {
               <Image
                 src={imageFront}
                 fill
-                alt='frontCMND'
+                alt='frontCCCD_old'
                 objectFit='contain'
                 className={`${onLoadFront && 'grayscale'}`}
               />
             </div>
           ) : (
-            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'frontCMND')}>
+            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'frontCCCD_old')}>
               <p className='ant-upload-drag-icon'>
                 <BiIdCard className='inline text-blue-400' size={50} />
               </p>
@@ -161,7 +162,7 @@ export default function CMND_PAGE() {
           )}
         </Col>
         <Col span={12} className='p-3'>
-          <Title level={4}>Mặt sau Chứng minh nhân dân</Title>
+          <Title level={4}>Mặt sau CCCD cũ</Title>
           {imageBack ? (
             <div className='w-full h-full flex items-center justify-center relative'>
               {onLoadBack && (
@@ -174,13 +175,13 @@ export default function CMND_PAGE() {
               <Image
                 src={imageBack}
                 fill
-                alt='backCMND'
+                alt='backCCCD_old'
                 objectFit='contain'
                 className={`${onLoadBack && 'grayscale'}`}
               />
             </div>
           ) : (
-            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'backCMND')}>
+            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'backCCCD_old')}>
               <p className='ant-upload-drag-icon'>
                 <BiIdCard className='inline text-blue-400' size={50} />
               </p>
@@ -191,7 +192,7 @@ export default function CMND_PAGE() {
         </Col>
       </Row>
       <div className='p-3 mt-5'>
-        <Descriptions title='Thông tin chứng minh nhân dân' bordered items={renObjItem(RenData)} />
+        <Descriptions title='Thông tin CCCD' bordered items={renObjItem(RenData)} />
         <Button
           type='primary'
           className='mt-8 float-right'
