@@ -1,21 +1,28 @@
 'use client';
 import { Card, Typography } from 'antd';
 import Link from 'next/link';
+import TempCCCD from '@/assets/images/PhoiCCCD.jpg';
+import TempCMND from '@/assets/images/PhoiCMND.jpg';
+import TempCCCD_Old from '@/assets/images/PhoiCCCD_old.jpg';
+import Image from 'next/image';
 
 const supportList = [
   {
     key: 0,
     name: 'Căn cước công dân',
+    temp: TempCCCD,
     href: '/demo/cccd',
   },
   {
     key: 1,
     name: 'Căn cước công dân cũ',
+    temp: TempCCCD_Old,
     href: '/demo/cccd_old',
   },
   {
     key: 2,
     name: 'Chứng minh nhân dân',
+    temp: TempCMND,
     href: '/demo/cmnd',
   },
 ];
@@ -44,8 +51,12 @@ export default function IndexPage() {
             <Link href={item.href} key={item.key}>
               <Card
                 title={item.name}
-                className='cursor-pointer relative hover:shadow-xl transition-shadow duration-500 ease-in-out'
-              ></Card>
+                className='cursor-pointer hover:shadow-xl transition-shadow duration-500 ease-in-out'
+              >
+                <div className='relative w-full h-32'>
+                  <Image src={item.temp} alt={item.name} fill objectFit='contain' className='rounded-lg' />
+                </div>
+              </Card>
             </Link>
           ))}
         </div>
