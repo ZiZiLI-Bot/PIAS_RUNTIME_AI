@@ -5,7 +5,6 @@ import torch
 import cv2
 import numpy as np
 import os
-from urllib.request import urlopen
 from PIL import Image
 from dotenv import load_dotenv
 
@@ -14,28 +13,28 @@ load_dotenv()
 
 # Load Model
 path_model = os.path.join(ABS_PATH, "assets/models/")
-model1 = torch.hub.load(
+modelFront = torch.hub.load(
     "ultralytics/yolov5", "custom", path=path_model + "last_22_7.pt"
 )
-model1.conf = 0.2
+modelFront.conf = 0.2
 
-model2 = torch.hub.load(
+modelBack = torch.hub.load(
     "ultralytics/yolov5", "custom", path=path_model + "last_24_7.pt"
 )
-model2.conf = 0.2
+modelBack.conf = 0.2
 
 config = Cfg.load_config_from_name("vgg_transformer")
 config["device"] = "cuda"
 detector = Predictor(config)
 
 
-def detected_front(img_path):
+def detected_front(img):
     tl = []
     tr = []
     br = []
     bl = []
 
-    img = cv2.imread(img_path)
+    # img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     border_size = 150
@@ -49,7 +48,7 @@ def detected_front(img_path):
         value=[255, 255, 255],
     )
     orig = img.copy()
-    rs = model1(img)
+    rs = modelFront(img)
     out = rs.pandas().xyxy[0]
 
     if (
@@ -110,13 +109,13 @@ def detected_front(img_path):
     return tl, tr, br, bl, warped, orig, mess
 
 
-def detected_back(img_path):
+def detected_back(img):
     tl = []
     tr = []
     br = []
     bl = []
 
-    img = cv2.imread(img_path)
+    # img = cv2.imread(img_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     border_size = 350
@@ -130,7 +129,7 @@ def detected_back(img_path):
         value=[255, 255, 255],
     )
     orig = img.copy()
-    rs = model2(img)
+    rs = modelBack(img)
     out = rs.pandas().xyxy[0]
 
     if (
@@ -197,12 +196,25 @@ def information(warped):
     origin_ = warped[470:520, 290:900]
     residence1_ = warped[505:550, 685:900]
     residence2_ = warped[545:620, 290:900]
-    return name_, ID_, date_, sex_, origin_, residence1_, residence2_
+    avatar_ = warped[210:510, 35:275]
+    out_date_ = warped[527:557, 150:285]
+    return (
+        name_,
+        ID_,
+        date_,
+        sex_,
+        origin_,
+        residence1_,
+        residence2_,
+        avatar_,
+        out_date_,
+    )
 
 
 # cái này của mặt sau CCCD mới
 def information2(warped):
     datee = warped[70:115, 405:545]
+    p_identification = warped[40:70, 33:320]
     return datee
 
 
@@ -213,13 +225,25 @@ def information3(warped):
     name_ = warped[210:320, 400:1000]
     date_ = warped[290:370, 550:1000]
     sex_ = warped[340:400, 400:550]
-    # origin_ = warped[400: 510, 450: 1000]
     origin1_ = warped[410:450, 440:1000]
     origin2_ = warped[440:495, 440:1000]
     residence1_ = warped[465:535, 480:1000]
     residence2_ = warped[510:770, 410:1000]
+    avatar_ = warped[227:535, 49:315]
+    out_date_ = warped[552:590, 215:370]
 
-    return name_, ID_, date_, sex_, origin1_, origin2_, residence1_, residence2_
+    return (
+        name_,
+        ID_,
+        date_,
+        sex_,
+        origin1_,
+        origin2_,
+        residence1_,
+        residence2_,
+        avatar_,
+        out_date_,
+    )
 
 
 # cái này là của mặt trước CMND
@@ -233,7 +257,7 @@ def information4(warped):
     origin2_ = warped[410:500, 280:950]
     residence1_ = warped[470:540, 590:950]
     residence2_ = warped[520:590, 280:950]
-
+    avatar_ = warped[245:534, 55:290]
     return name1_, name2_, ID_, date_, origin1_, origin2_, residence1_, residence2_
 
 
@@ -261,16 +285,27 @@ def detect_service(imgPath, typeCard):
         or typeCard == "frontCCCD_old"
         or typeCard == "frontCMND"
     ):
-        tl, tr, br, bl, warped, orig, mess = detected_front(imgPath)
+        img = cv2.imread(imgPath)
+        tl, tr, br, bl, warped, orig, mess = detected_front(img)
         if warped is None:
             return {"isFalse": True, "mess": mess, "imgOutUrl": None}
         imgName = imgPath.split("/")[-1].split(".")[0] + "_out.png"
-        cv2.imwrite(os.path.join(ABS_PATH, f"public/{imgName}"), warped)
-        imgOutUrl = f"{os.getenv('HOST_NAME')}/file/{imgName}"
+        cv2.imwrite(
+            os.path.join(ABS_PATH, f"public/paper_service/cards/{imgName}"), warped
+        )
+        imgOutUrl = f"{os.getenv('HOST_NAME')}/file/paper_service/cards/{imgName}"
         if typeCard == "frontCCCD":
-            name_, ID_, date_, sex_, origin_, residence1_, residence2_ = information(
-                warped
-            )
+            (
+                name_,
+                ID_,
+                date_,
+                sex_,
+                origin_,
+                residence1_,
+                residence2_,
+                avatar_,
+                out_date_,
+            ) = information(warped)
             name_ = Image.fromarray(name_)
             date_ = Image.fromarray(date_)
             sex_ = Image.fromarray(sex_)
@@ -278,6 +313,7 @@ def detect_service(imgPath, typeCard):
             origin_ = Image.fromarray(origin_)
             residence1_ = Image.fromarray(residence1_)
             residence2_ = Image.fromarray(residence2_)
+            out_date_ = Image.fromarray(out_date_)
             name = detector.predict(name_, return_prob=False)
             date = detector.predict(date_, return_prob=False)
             gender = detector.predict(sex_, return_prob=False)
@@ -285,7 +321,15 @@ def detect_service(imgPath, typeCard):
             origin = detector.predict(origin_, return_prob=False)
             residence1 = detector.predict(residence1_, return_prob=False)
             residence2 = detector.predict(residence2_, return_prob=False)
+            out_date = detector.predict(out_date_, return_prob=False)
             residence = residence1 + ", " + residence2
+
+            avatar_path = os.path.join(
+                ABS_PATH, f"public/paper_service/avatars/{imgName}"
+            )
+
+            cv2.imwrite(avatar_path, avatar_)
+
             res = {
                 "name": name,
                 "date_of_birth": date,
@@ -295,6 +339,8 @@ def detect_service(imgPath, typeCard):
                 "residence": residence,
                 "mess": mess,
                 "imgOutUrl": imgOutUrl,
+                "out_date": out_date,
+                "avatar": f"{os.getenv('HOST_NAME')}/file/paper_service/avatars/{imgName}",
             }
             return res
         elif typeCard == "frontCCCD_old":
@@ -378,7 +424,8 @@ def detect_service(imgPath, typeCard):
             }
             return res
     elif typeCard == "backCCCD" or typeCard == "backCCCD_old" or typeCard == "backCMND":
-        tl, tr, br, bl, warped, orig, mess = detected_back(imgPath)
+        img = cv2.imread(imgPath)
+        tl, tr, br, bl, warped, orig, mess = detected_back(img)
         if warped is None:
             return {"isFalse": True, "mess": mess, "imgOutUrl": None}
         imgName = imgPath.split("/")[-1].split(".")[0] + "_out.png"

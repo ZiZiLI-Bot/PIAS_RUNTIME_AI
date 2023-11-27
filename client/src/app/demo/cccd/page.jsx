@@ -67,6 +67,7 @@ export default function CCCD_Detect() {
           setImageFront(URL.createObjectURL(info.file.originFileObj));
           const res = await handleDetect(info.file.response.data.name, typeCard);
           if (res.success) {
+            console.log(res);
             setDataRes((prev) => ({ ...res.data, ...prev }));
             setImageFront(res.data.imgOutUrl);
             notification.success({
