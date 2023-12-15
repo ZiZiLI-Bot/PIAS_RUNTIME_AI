@@ -30,7 +30,7 @@ export default function PaperUploads({
       <Col xs={24} lg={12} className='p-3'>
         <Title level={4}>{titles[0]}</Title>
         {imageFront ? (
-          <div className='w-full h-full flex items-center justify-center relative'>
+          <div className='w-full h-[170px] flex items-center justify-center relative'>
             {onLoadFront && (
               <div className='w-full h-full absolute top-0 left-0 z-10'>
                 <div className='w-full h-full flex flex-col items-center justify-center ScanEffect'>
@@ -59,7 +59,7 @@ export default function PaperUploads({
       <Col xs={24} lg={12} className='p-3'>
         <Title level={4}>{titles[1]}</Title>
         {imageBack ? (
-          <div className='w-full h-full flex items-center justify-center relative'>
+          <div className='w-full h-[170px] flex items-center justify-center relative'>
             {onLoadBack && (
               <div className='w-full h-full absolute top-0 left-0 z-10'>
                 <div className='w-full h-full flex flex-col items-center justify-center ScanEffect'>

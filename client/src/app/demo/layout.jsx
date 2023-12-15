@@ -1,6 +1,6 @@
 'use client';
 import { MENU_ITEMS } from '@/constants/Demo.constants';
-import { Breadcrumb, Layout, Menu, Typography, Grid, Drawer, Button } from 'antd';
+import { Breadcrumb, Button, Drawer, Grid, Layout, Menu, Typography } from 'antd';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
@@ -25,6 +25,7 @@ const DemoLayout = ({ children }) => {
   }, [pathname]);
 
   const handleChangeMenu = (e) => {
+    setOpenMenu(false);
     setCurrent(e.key);
     navigate.push(`/demo/${e.key}`);
   };
@@ -108,13 +109,13 @@ const DemoLayout = ({ children }) => {
           onClose={() => setOpenMenu(false)}
           open={openMenu}
         >
-          <div className='flex flex-col space-y-4'>
-            {MENU_ITEMS.map((link) => (
-              <Link key={link.key} href={`/demo/${link.key}`}>
-                <Text className='text-base'>{link.label}</Text>
-              </Link>
-            ))}
-          </div>
+          <Menu
+            onClick={handleChangeMenu}
+            selectedKeys={[current]}
+            mode='inline'
+            className='w-full border-r-0'
+            items={MENU_ITEMS}
+          />
         </Drawer>
       )}
     </Layout>

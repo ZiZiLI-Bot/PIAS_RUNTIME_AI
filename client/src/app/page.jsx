@@ -114,7 +114,7 @@ export default function HomePage() {
               <Text className='text-4xl font-medium block text-center lg:text-start'>
                 AI-<Text className='text-4xl text-red-600'>Read</Text>
               </Text>
-              <Text className='block text-7xl font-bold text-center lg:text-start HomeText'>
+              <Text className='block text-5xl md:text-7xl font-bold text-center lg:text-start HomeText'>
                 Extract identification paper data
               </Text>
               <div className='mt-6 flex space-x-3 justify-center lg:justify-start'>
@@ -136,7 +136,7 @@ export default function HomePage() {
                 <Radio.Group onChange={(e) => setTypeCard(e.target.value)} value={typeCard}>
                   <Radio value='frontCCCD'>CCCD gắn chip</Radio>
                   <Radio value='frontCCCD_old'>CCCD cũ</Radio>
-                  <Radio value='frontCMND'>Chứng minh nhân dân</Radio>
+                  <Radio value='frontCMND'>CMND</Radio>
                 </Radio.Group>
               </div>
               {!image ? (
@@ -174,10 +174,10 @@ export default function HomePage() {
                   const value = data[key];
                   return (
                     <Row key={key} className='border-b py-1'>
-                      <Col span={9} className='text-base mb-1 font-bold'>
+                      <Col span={9} className='text-md mb-1 font-bold lg:text-base'>
                         {key}: &nbsp;
                       </Col>
-                      <Col span={15} className='text-base mb-1'>
+                      <Col span={15} className='text-md lg:text-base mb-1'>
                         {value}
                       </Col>
                     </Row>

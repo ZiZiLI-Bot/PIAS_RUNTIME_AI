@@ -98,7 +98,7 @@ def detected_front(img):
         and len(out[out["name"] == "br"]) == 2
         and len(out[out["name"] == "bl"]) == 2
     ):
-        mess = "Hình ảnh nhiều hơn một thẻ!"
+        mess = "Hình ảnh chứa nhiều hơn một thẻ!"
         warped = None
         orig = None
     else:
@@ -258,13 +258,13 @@ def information4(warped):
     residence1_ = warped[470:540, 590:950]
     residence2_ = warped[520:590, 280:950]
     avatar_ = warped[245:534, 55:290]
-    return name1_, name2_, ID_, date_, origin1_, origin2_, residence1_, residence2_
+    return name1_, name2_, ID_, date_, origin1_, origin2_, residence1_, residence2_, avatar_
 
 
 # cái này là của mặt sau CCCD cũ
 def information7(warped):
     d1 = warped[280:330, 500:980]
-
+    
     # d2 = warped[280:330, 750:800]
 
     # d3 = warped[280:330, 870:1000]
@@ -323,7 +323,6 @@ def detect_service(imgPath, typeCard):
             residence2 = detector.predict(residence2_, return_prob=False)
             out_date = detector.predict(out_date_, return_prob=False)
             residence = residence1 + ", " + residence2
-
             avatar_path = os.path.join(
                 ABS_PATH, f"public/paper_service/avatars/{imgName}"
             )

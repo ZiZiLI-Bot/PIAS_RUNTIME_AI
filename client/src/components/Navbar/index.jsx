@@ -29,7 +29,7 @@ export default function NavBar() {
             </Link>
           ))}
         <Link href='/login'>
-          <Button type='default' size='large' className='w-32'>
+          <Button type='default' size={screens.md ? 'large' : 'middle'} className='w-20 lg:w-32'>
             Login
           </Button>
         </Link>
