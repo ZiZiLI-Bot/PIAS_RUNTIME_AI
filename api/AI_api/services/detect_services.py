@@ -24,7 +24,7 @@ modelBack = torch.hub.load(
 modelBack.conf = 0.2
 
 config = Cfg.load_config_from_name("vgg_transformer")
-config["device"] = "cuda"
+config["device"] = "cpu"
 detector = Predictor(config)
 
 
@@ -258,13 +258,23 @@ def information4(warped):
     residence1_ = warped[470:540, 590:950]
     residence2_ = warped[520:590, 280:950]
     avatar_ = warped[245:534, 55:290]
-    return name1_, name2_, ID_, date_, origin1_, origin2_, residence1_, residence2_, avatar_
+    return (
+        name1_,
+        name2_,
+        ID_,
+        date_,
+        origin1_,
+        origin2_,
+        residence1_,
+        residence2_,
+        avatar_,
+    )
 
 
 # cái này là của mặt sau CCCD cũ
 def information7(warped):
     d1 = warped[280:330, 500:980]
-    
+
     # d2 = warped[280:330, 750:800]
 
     # d3 = warped[280:330, 870:1000]

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  SV_PAPER:
+    image: hungwap375/mystore:SV_PAPER
+    network_mode: 'nginx-proxy'
+    container_name: SV_PAPER
+    volumes:
+      - paper_service_vol:/app/public
+    environment:
+      - VIRTUAL_HOST=api.paperread.chuhung.com
+      - VIRTUAL_PORT=3002
+      - LETSENCRYPT_HOST=api.paperread.chuhung.com
+    restart: on-failure
+
+  CL_PAPER:
+    image: hungwap375/mystore:CL_PAPER
+    network_mode: 'nginx-proxy'
+    container_name: CL_PAPER
+    environment:
+      - VIRTUAL_HOST=paperread.chuhung.com
+      - VIRTUAL_PORT=3001
+      - LETSENCRYPT_HOST=paperread.chuhung.com
+    restart: on-failure
+
+volumes:
+  paper_service_vol:
+    external: true
