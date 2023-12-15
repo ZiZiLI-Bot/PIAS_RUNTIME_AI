@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 'use client';
 import ModalExportFile from '@/components/ModalExportFile';
+import PaperUploads from '@/components/PaperUploads';
 import AXClient from '@/utils/API';
-import { Button, Col, Descriptions, Row, Tooltip, Typography, Upload, message, notification } from 'antd';
-import Image from 'next/image';
+import { Button, Descriptions, Tooltip, Typography, message, notification } from 'antd';
 import { useEffect, useState } from 'react';
-import { BiIdCard } from 'react-icons/bi';
 import { TbFileExport, TbInfoCircleFilled, TbReload } from 'react-icons/tb';
 
 const renObjItem = (item) => {
@@ -20,7 +19,7 @@ const renObjItem = (item) => {
   });
 };
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 export default function CCCD_Old_Detect() {
   const [imageFront, setImageFront] = useState(null);
   const [imageBack, setImageBack] = useState(null);
@@ -30,17 +29,6 @@ export default function CCCD_Old_Detect() {
   const [RenData, setRenData] = useState(null);
   const [dataReady, setDataReady] = useState(false);
   const [exportModal, setExportModal] = useState(false);
-
-  const props = {
-    name: 'file',
-    multiple: false,
-    action: process.env.NEXT_PUBLIC_URL_API + '/upload',
-    accept: 'image/*',
-    height: 200,
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
 
   useEffect(() => {
     const data = {
@@ -63,6 +51,7 @@ export default function CCCD_Old_Detect() {
     if (status === 'done') {
       if (info.file.response.success) {
         if (typeCard === 'frontCCCD_old') {
+          message.success(`${info.file.name} file uploaded successfully.`);
           setOnLoadFront(true);
           setImageFront(URL.createObjectURL(info.file.originFileObj));
           const res = await handleDetect(info.file.response.data.name, typeCard);
@@ -80,6 +69,7 @@ export default function CCCD_Old_Detect() {
             message.error('Error!');
           }
         } else {
+          message.success(`${info.file.name} file uploaded successfully.`);
           setOnLoadBack(true);
           setImageBack(URL.createObjectURL(info.file.originFileObj));
           const res = await handleDetect(info.file.response.data.name, typeCard);
@@ -98,7 +88,6 @@ export default function CCCD_Old_Detect() {
           }
         }
       }
-      message.success(`${info.file.name} file uploaded successfully.`);
     } else if (status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }
@@ -131,66 +120,15 @@ export default function CCCD_Old_Detect() {
           <Button onClick={handleReset} icon={<TbReload className='inline mb-1' size={18} />} />
         </Tooltip>
       </div>
-      <Row className='h-[260px]'>
-        <Col span={12} className='p-3'>
-          <Title level={4}>Mặt trước CCCD cũ</Title>
-          {imageFront ? (
-            <div className='w-full h-full flex items-center justify-center relative'>
-              {onLoadFront && (
-                <div className='w-full h-full absolute top-0 left-0 z-10'>
-                  <div className='w-full h-full flex flex-col items-center justify-center ScanEffect'>
-                    <Text className='text-white text-base'>On Scan</Text>
-                  </div>
-                </div>
-              )}
-              <Image
-                src={imageFront}
-                fill
-                alt='frontCCCD_old'
-                objectFit='contain'
-                className={`${onLoadFront && 'grayscale'}`}
-              />
-            </div>
-          ) : (
-            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'frontCCCD_old')}>
-              <p className='ant-upload-drag-icon'>
-                <BiIdCard className='inline text-blue-400' size={50} />
-              </p>
-              <Text className='block'>Chọn hoặc thả hình ảnh vào đây để tải lên</Text>
-              <Text className='text-xs text-gray-400'>Hình ảnh tối đa 20Mb, định dạng hỗi trợ .jpg, .jpeg, .png</Text>
-            </Upload.Dragger>
-          )}
-        </Col>
-        <Col span={12} className='p-3'>
-          <Title level={4}>Mặt sau CCCD cũ</Title>
-          {imageBack ? (
-            <div className='w-full h-full flex items-center justify-center relative'>
-              {onLoadBack && (
-                <div className='w-full h-full absolute top-0 left-0 z-10'>
-                  <div className='w-full h-full flex flex-col items-center justify-center ScanEffect'>
-                    <Text className='text-white text-base'>On Scan</Text>
-                  </div>
-                </div>
-              )}
-              <Image
-                src={imageBack}
-                fill
-                alt='backCCCD_old'
-                objectFit='contain'
-                className={`${onLoadBack && 'grayscale'}`}
-              />
-            </div>
-          ) : (
-            <Upload.Dragger {...props} onChange={(info) => handleChange(info, 'backCCCD_old')}>
-              <p className='ant-upload-drag-icon'>
-                <BiIdCard className='inline text-blue-400' size={50} />
-              </p>
-              <Text className='block'>Chọn hoặc thả hình ảnh vào đây để tải lên</Text>
-              <Text className='text-xs text-gray-400'>Hình ảnh tối đa 20Mb, hỗi trợ định dạng .jpg, .jpeg, .png</Text>
-            </Upload.Dragger>
-          )}
-        </Col>
-      </Row>
+      <PaperUploads
+        imageFront={imageFront}
+        imageBack={imageBack}
+        onLoadFront={onLoadFront}
+        onLoadBack={onLoadBack}
+        titles={['Mặt trước CCCD cũ ', 'Mặt sau CCCD cũ']}
+        handleChange={handleChange}
+        typeCard='CCCD_old'
+      />
       <div className='p-3 mt-5'>
         <Descriptions title='Thông tin CCCD' bordered items={renObjItem(RenData)} />
         <Button

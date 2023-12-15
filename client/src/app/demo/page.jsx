@@ -1,10 +1,10 @@
 'use client';
-import { Card, Typography } from 'antd';
-import Link from 'next/link';
 import TempCCCD from '@/assets/images/PhoiCCCD.jpg';
-import TempCMND from '@/assets/images/PhoiCMND.jpg';
 import TempCCCD_Old from '@/assets/images/PhoiCCCD_old.jpg';
+import TempCMND from '@/assets/images/PhoiCMND.jpg';
+import { Card, Typography } from 'antd';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const supportList = [
   {
@@ -30,7 +30,7 @@ const supportList = [
 const { Text } = Typography;
 export default function IndexPage() {
   return (
-    <main className='px-10 py-6 w-full'>
+    <main className='px-1 md:px-10 py-6 w-full'>
       <div className='flex flex-col space-y-3'>
         <Text className='text-4xl font-medium block'>
           AI-<Text className='text-4xl text-red-600'>Read</Text>
@@ -46,7 +46,7 @@ export default function IndexPage() {
       </div>
       <div className='mt-8 w-full'>
         <Text className='text-2xl font-medium'>Các loại giấy tờ hỗ trợ</Text>
-        <div className='grid gap-4 grid-cols-3 mt-8'>
+        <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-8'>
           {supportList.map((item) => (
             <Link href={item.href} key={item.key}>
               <Card

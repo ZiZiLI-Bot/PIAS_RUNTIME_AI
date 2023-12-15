@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 'use client';
 import NavBar from '@/components/Navbar';
+import { formDataCCCD, formDataCMND } from '@/constants/HomePage.constant';
 import AXClient from '@/utils/API';
-import { Button, Col, Radio, Row, Space, Typography, Upload, message } from 'antd';
+import { Button, Col, Radio, Row, Typography, Upload, message } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { BiIdCard } from 'react-icons/bi';
-import { formDataCCCD, formDataCMND } from '@/constants/HomePage.constant';
 
 const { Text } = Typography;
 
@@ -109,13 +109,15 @@ export default function HomePage() {
       <NavBar />
       <div className='w-full h-screen'>
         <Row className='container mx-auto w-full h-full'>
-          <Col span={12} className='flex items-center justify-center'>
-            <div className='w-full'>
-              <Text className='text-4xl font-medium'>
+          <Col xs={24} lg={12} className='flex items-center justify-center'>
+            <div className='w-full mt-32 lg:mt-0'>
+              <Text className='text-4xl font-medium block text-center lg:text-start'>
                 AI-<Text className='text-4xl text-red-600'>Read</Text>
               </Text>
-              <Text className='block text-7xl font-bold HomeText'>Extract identification paper data</Text>
-              <Space size='middle' className='mt-6'>
+              <Text className='block text-7xl font-bold text-center lg:text-start HomeText'>
+                Extract identification paper data
+              </Text>
+              <div className='mt-6 flex space-x-3 justify-center lg:justify-start'>
                 <Link href='/demo'>
                   <Button className='w-32 shadow-md shadow-blue-600/50' size='large' type='primary'>
                     <Text className='text-base font-medium text-white'>Demo</Text>
@@ -124,11 +126,11 @@ export default function HomePage() {
                 <Button className='w-32' size='large' type='default'>
                   Get Contacts
                 </Button>
-              </Space>
+              </div>
             </div>
           </Col>
-          <Col span={12} className='w-full h-full flex items-center justify-center'>
-            <div className='w-3/4 h-2/3 bg-slate-50 rounded-md shadow-xl shadow-slate-300 p-6'>
+          <Col xs={24} lg={12} className='w-full h-full flex items-center justify-center'>
+            <div className='xs:w-full md:w-3/4 lg:w-[460px] h-[560px] bg-slate-50 rounded-md shadow-xl shadow-slate-300 p-6'>
               <div className='flex flex-col space-y-2 mb-2'>
                 <Text className='block text-base font-medium'>Quick demo:</Text>
                 <Radio.Group onChange={(e) => setTypeCard(e.target.value)} value={typeCard}>
@@ -154,14 +156,16 @@ export default function HomePage() {
                       </div>
                     </div>
                   )}
-                  <Image
-                    fill
-                    className={`rounded-md ${loading && 'grayscale'}`}
-                    loading='lazy'
-                    src={image.url}
-                    alt='DETECT DEMO'
-                    sizes='100vw'
-                  />
+                  <div className='w-full h-full'>
+                    <Image
+                      fill
+                      className={`rounded-md ${loading && 'grayscale'}`}
+                      loading='lazy'
+                      src={image.url}
+                      alt='DETECT DEMO'
+                      sizes='100vw'
+                    />
+                  </div>
                 </div>
               )}
               <Text className='block text-base my-2 font-medium'>Results:</Text>
